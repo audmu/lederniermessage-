@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Le Dernier Message</title>
+  <meta name="description" content="1 000 000 messages. Puis le silence. Laisse ta trace pour toujours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --black: #0A0A0A;
+      --white: #FAFAFA;
+      --grey-1: #888;
+      --grey-2: #D4D4D4;
+      --grey-3: #F0F0F0;
+      --serif: 'EB Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --max: 620px;
+      --pad: clamp(1.25rem, 5vw, 2rem);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+    }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--grey-2);
+      padding: 1.5rem 0;
+    }
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      text-decoration: none;
+    }
+    .compteur-header {
+      font-size: 0.8rem;
+      color: var(--grey-1);
+      font-variant-numeric: tabular-nums;
+    }
+    .compteur-header span {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 5rem 0 3.5rem;
+      border-bottom: 1px solid var(--grey-2);
+    }
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      color: var(--grey-1);
+      margin-bottom: 1.5rem;
+      font-family: var(--sans);
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 8vw, 3.8rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--grey-1);
+    }
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--grey-1);
+      max-width: 44ch;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      margin-bottom: 2.5rem;
+    }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--grey-1);
+      margin-bottom: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 2px;
+      background: var(--grey-2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--black);
+      border-radius: 2px;
+      transition: width 0.8s ease;
+    }
+
+    /* ── CTA Button ── */
+    .btn-primary {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.8; }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      padding: 0.85rem 2rem;
+      border: 1px solid var(--grey-2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--black); }
+
+    /* ── Messages feed ── */
+    .messages-section {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--grey-2);
+    }
+    .section-label {
+      font-size: 0.75rem;
+      color: var(--grey-1);
+      margin-bottom: 2rem;
+    }
+    .message-card {
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--grey-3);
+    }
+    .message-card:last-child { border-bottom: none; }
+    .message-texte {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      line-height: 1.65;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+      max-width: 56ch;
+    }
+    .message-meta {
+      font-size: 0.75rem;
+      color: var(--grey-1);
+    }
+
+    /* ── Formulaire ── */
+    .form-section {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--grey-2);
+    }
+    .form-title {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .form-sub {
+      font-size: 0.9rem;
+      color: var(--grey-1);
+      margin-bottom: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--grey-1);
+      margin-bottom: 0.4rem;
+    }
+    textarea, input[type="text"], input[type="email"] {
+      width: 100%;
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--black);
+      background: var(--white);
+      border: 1px solid var(--grey-2);
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color 0.15s;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    textarea:focus, input:focus { border-color: var(--black); }
+    textarea {
+      resize: vertical;
+      min-height: 130px;
+      line-height: 1.6;
+    }
+    .char-count {
+      font-size: 0.75rem;
+      color: var(--grey-1);
+      text-align: right;
+      margin-top: 0.3rem;
+    }
+    .char-count.warn { color: #c0392b; }
+    .form-price {
+      font-size: 0.85rem;
+      color: var(--grey-1);
+      margin-bottom: 1.25rem;
+    }
+    .form-price strong { color: var(--black); }
+    .form-legal {
+      font-size: 0.75rem;
+      color: var(--grey-1);
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+    #form-message {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      display: none;
+    }
+    #form-message.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; display: block; }
+    #form-message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+
+    /* ── Manifeste ── */
+    .manifeste {
+      padding: 3.5rem 0;
+      border-bottom: 1px solid var(--grey-2);
+    }
+    .manifeste-text {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: var(--black);
+      max-width: 52ch;
+    }
+    .manifeste-text p { margin-bottom: 1.25rem; }
+    .manifeste-text p:last-child { margin-bottom: 0; color: var(--grey-1); }
+
+    /* ── Footer ── */
+    footer {
+      padding: 2rem 0;
+    }
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--grey-1);
+    }
+
+    /* ── Loading overlay ── */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(250,250,250,0.9);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .loading-overlay.active { display: flex; }
+    .loading-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--grey-2);
+      border-top-color: var(--black);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .loading-text { font-size: 0.9rem; color: var(--grey-1); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .hero { padding: 3rem 0 2.5rem; }
+      header .container { flex-direction: column; gap: 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <p class="loading-text">Gravure en cours…</p>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="container">
+    <a href="/" class="logo">Le Dernier Message</a>
+    <p class="compteur-header"><span id="compteur-nb">…</span> / 1 000 000 messages</p>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Un projet unique. Une promesse simple.</p>
+    <h1 class="hero-title">1 000 000 messages.<br><em>Puis le silence.</em></h1>
+    <p class="hero-sub">Ce site accueille exactement un million de messages. Quand il est plein, il se ferme pour toujours. Ton message reste gravé ici, immuable, pour toujours.</p>
+
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span id="progress-pct">0%</span>
+        <span>1 000 000</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <a href="#ecrire" class="btn-primary">Laisser mon message — 1 €</a>
+  </div>
+</section>
+
+<!-- Messages récents -->
+<section class="messages-section">
+  <div class="container">
+    <p class="section-label">Derniers messages gravés</p>
+    <div id="messages-feed">
+      <!-- Injecté via JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Formulaire -->
+<section class="form-section" id="ecrire">
+  <div class="container">
+    <h2 class="form-title">Écrire mon message</h2>
+    <p class="form-sub">Ce message ne pourra jamais être modifié ni supprimé.</p>
+
+    <div class="form-group">
+      <label for="texte">Ton message <span style="color:#c0392b">*</span></label>
+      <textarea id="texte" maxlength="500" placeholder="Ce que tu veux laisser au monde…" oninput="updateCount()"></textarea>
+      <p class="char-count" id="char-count">0 / 500</p>
+    </div>
+
+    <div class="form-group">
+      <label for="pseudo">Ton prénom ou pseudo (facultatif)</label>
+      <input type="text" id="pseudo" maxlength="50" placeholder="Anonyme" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email (pour recevoir la confirmation)</label>
+      <input type="email" id="email" placeholder="ton@email.com" />
+    </div>
+
+    <p class="form-price">Contribution : <strong>1 €</strong> — paiement sécurisé par Stripe</p>
+
+    <button class="btn-primary" id="btn-payer" onclick="payerEtPublier()">Graver mon message pour toujours</button>
+
+    <div id="form-message"></div>
+
+    <p class="form-legal">En soumettant ce message, tu acceptes qu'il soit publié définitivement et de façon irrémédiable sur ce site. Aucun remboursement possible. Les messages haineux, illégaux ou à caractère sexuel seront supprimés sans remboursement.</p>
+  </div>
+</section>
+
+<!-- Manifeste -->
+<section class="manifeste">
+  <div class="container">
+    <div class="manifeste-text">
+      <p>Chaque jour, des millions de pensées disparaissent sans laisser de trace. Des mots qu'on n'a jamais dits, des vérités qu'on a gardées pour soi, des messages destinés à des gens qui ne les liront jamais.</p>
+      <p>Ce site est différent. Il ne grandit pas indéfiniment. Il ne change pas. Il accueille exactement un million de messages humains — pas un de plus — puis il se fige pour toujours.</p>
+      <p>Ce que tu écriras ici existera après toi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p class="footer-copy">© 2024 Le Dernier Message</p>
+    <p class="footer-copy"><a href="mailto:contact@lederniermessage.com" style="color:inherit">Contact</a></p>
+  </div>
+</footer>
+
+<script>
+  // ══════════════════════════════════════════
+  // CONFIGURATION — À REMPLIR AVEC TES CLÉS
+  // ══════════════════════════════════════════
+  const SUPABASE_URL = 'REMPLACE_PAR_TON_PROJECT_URL';
+  const SUPABASE_ANON_KEY = 'REMPLACE_PAR_TA_CLE_ANON';
+  const STRIPE_PUBLIC_KEY = 'REMPLACE_PAR_TA_CLE_STRIPE_PUBLIQUE';
+  // URL de ton backend (Vercel serverless function)
+  const API_URL = '/api';
+
+  // ══════════════════════════════════════════
+  // INIT SUPABASE
+  // ══════════════════════════════════════════
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const stripe = Stripe(STRIPE_PUBLIC_KEY);
+
+  // ══════════════════════════════════════════
+  // COMPTEUR
+  // ══════════════════════════════════════════
+  async function chargerCompteur() {
+    try {
+      const { count } = await db
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('visible', true);
+      const n = count || 0;
+      document.getElementById('compteur-nb').textContent = n.toLocaleString('fr-FR');
+      const pct = (n / 1000000 * 100).toFixed(4);
+      document.getElementById('progress-pct').textContent = pct + '%';
+      document.getElementById('progress-fill').style.width = Math.min(pct, 100) + '%';
+    } catch(e) { console.error(e); }
+  }
+
+  // ══════════════════════════════════════════
+  // MESSAGES RÉCENTS
+  // ══════════════════════════════════════════
+  async function chargerMessages() {
+    try {
+      const { data } = await db
+        .from('messages')
+        .select('texte, pseudo, date')
+        .eq('visible', true)
+        .order('date', { ascending: false })
+        .limit(5);
+      const feed = document.getElementById('messages-feed');
+      if (!data || data.length === 0) {
+        feed.innerHTML = '<p style="color:var(--grey-1);font-size:0.9rem">Sois le premier à laisser ton message.</p>';
+        return;
+      }
+      feed.innerHTML = data.map(m => `
+        <div class="message-card">
+          <p class="message-texte">${escapeHtml(m.texte)}</p>
+          <p class="message-meta">${m.pseudo ? escapeHtml(m.pseudo) : 'Anonyme'} · ${formatDate(m.date)}</p>
+        </div>
+      `).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  // ══════════════════════════════════════════
+  // PAIEMENT STRIPE
+  // ══════════════════════════════════════════
+  async function payerEtPublier() {
+    const texte = document.getElementById('texte').value.trim();
+    const pseudo = document.getElementById('pseudo').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const msg = document.getElementById('form-message');
+
+    // Validation
+    if (!texte) { showMsg('Écris ton message avant de continuer.', 'error'); return; }
+    if (texte.length < 5) { showMsg('Ton message est trop court.', 'error'); return; }
+    if (email && !validEmail(email)) { showMsg('Adresse email invalide.', 'error'); return; }
+
+    const btn = document.getElementById('btn-payer');
+    btn.disabled = true;
+    document.getElementById('loading').classList.add('active');
+
+    try {
+      // Créer une session Stripe Checkout côté serveur
+      const res = await fetch(`${API_URL}/create-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texte, pseudo: pseudo || 'Anonyme', email })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erreur serveur');
+      // Rediriger vers Stripe Checkout
+      window.location.href = data.url;
+    } catch(e) {
+      showMsg('Une erreur est survenue : ' + e.message, 'error');
+      btn.disabled = false;
+      document.getElementById('loading').classList.remove('active');
+    }
+  }
+
+  // ══════════════════════════════════════════
+  // HELPERS
+  // ══════════════════════════════════════════
+  function updateCount() {
+    const v = document.getElementById('texte').value.length;
+    const el = document.getElementById('char-count');
+    el.textContent = v + ' / 500';
+    el.classList.toggle('warn', v > 450);
+  }
+
+  function showMsg(text, type) {
+    const el = document.getElementById('form-message');
+    el.textContent = text;
+    el.className = type;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  function formatDate(d) {
+    return new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  // ══════════════════════════════════════════
+  // INIT
+  // ══════════════════════════════════════════
+  chargerCompteur();
+  chargerMessages();
+
+  // Vérifier si retour de Stripe
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('success') === '1') {
+    showMsg('Message gravé pour toujours. Merci.', 'success');
+    document.getElementById('ecrire').scrollIntoView({ behavior: 'smooth' });
+    chargerMessages();
+    chargerCompteur();
+  }
+  if (params.get('annule') === '1') {
+    showMsg('Paiement annulé. Ton message n\'a pas été enregistré.', 'error');
+  }
+</script>
+</body>
+</html>
