@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mentions légales & CGV — Le Dernier Message</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0A0A0A;
+      --white: #FAFAFA;
+      --grey-1: #888;
+      --grey-2: #D4D4D4;
+      --grey-3: #F0F0F0;
+      --serif: 'EB Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --max: 620px;
+      --pad: clamp(1.25rem, 5vw, 2rem);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+
+    /* Header */
+    header { border-bottom: 1px solid var(--grey-2); padding: 1.5rem 0; }
+    header .container { display: flex; justify-content: space-between; align-items: baseline; }
+    .logo { font-family: var(--serif); font-size: 1.2rem; font-weight: 400; color: var(--black); text-decoration: none; }
+    .back { font-size: 0.85rem; color: var(--grey-1); text-decoration: none; }
+    .back:hover { color: var(--black); }
+
+    /* Nav onglets */
+    .tabs { border-bottom: 1px solid var(--grey-2); padding-top: 2rem; }
+    .tabs .container { display: flex; gap: 2rem; overflow-x: auto; }
+    .tab {
+      font-size: 0.85rem;
+      color: var(--grey-1);
+      text-decoration: none;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      cursor: pointer;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: var(--sans);
+    }
+    .tab.active { color: var(--black); border-bottom-color: var(--black); }
+    .tab:hover { color: var(--black); }
+
+    /* Contenu */
+    .content { padding: 3rem 0 5rem; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    h1 { font-family: var(--serif); font-size: 2rem; font-weight: 400; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+    .date { font-size: 0.8rem; color: var(--grey-1); margin-bottom: 2.5rem; }
+    h2 { font-family: var(--sans); font-size: 0.95rem; font-weight: 500; margin: 2rem 0 0.75rem; }
+    p { font-size: 0.95rem; color: #333; margin-bottom: 0.75rem; line-height: 1.7; }
+    ul { margin: 0.5rem 0 0.75rem 1.25rem; }
+    li { font-size: 0.95rem; color: #333; margin-bottom: 0.4rem; line-height: 1.6; }
+    a { color: var(--black); }
+    .highlight { background: var(--grey-3); border-radius: 4px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .highlight p { margin: 0; font-size: 0.9rem; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--grey-2); padding: 2rem 0; }
+    footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+    .footer-copy { font-size: 0.8rem; color: var(--grey-1); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo">Le Dernier Message</a>
+    <a href="/" class="back">← Retour au site</a>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="container">
+    <button class="tab active" onclick="showTab('mentions')">Mentions légales</button>
+    <button class="tab" onclick="showTab('cgv')">CGV</button>
+    <button class="tab" onclick="showTab('confidentialite')">Confidentialité</button>
+  </div>
+</nav>
+
+<main class="content">
+  <div class="container">
+
+    <!-- MENTIONS LÉGALES -->
+    <div class="section active" id="mentions">
+      <h1>Mentions légales</h1>
+      <p class="date">Dernière mise à jour : octobre 2024</p>
+
+      <h2>Éditeur du site</h2>
+      <p>
+        Le site lederniermessage.com est édité par :<br>
+        <strong>Audrey Mullier</strong><br>
+        Thézан-lès-Béziers, France<br>
+        Email : <a href="mailto:contact@lederniermessage.com">contact@lederniermessage.com</a>
+      </p>
+
+      <h2>Hébergement</h2>
+      <p>
+        Le site est hébergé par :<br>
+        <strong>Vercel Inc.</strong><br>
+        440 N Barranca Ave #4133, Covina, CA 91723, États-Unis<br>
+        <a href="https://vercel.com" target="_blank">vercel.com</a>
+      </p>
+
+      <h2>Base de données</h2>
+      <p>
+        Les données sont stockées par :<br>
+        <strong>Supabase Inc.</strong><br>
+        <a href="https://supabase.com" target="_blank">supabase.com</a>
+      </p>
+
+      <h2>Paiement</h2>
+      <p>
+        Les paiements sont traités par :<br>
+        <strong>Stripe Inc.</strong><br>
+        510 Townsend Street, San Francisco, CA 94103, États-Unis<br>
+        <a href="https://stripe.com" target="_blank">stripe.com</a>
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>Le contenu du site (design, textes, code) est la propriété d'Audrey Mullier. Les messages publiés par les utilisateurs restent leur propriété intellectuelle. En publiant un message, l'utilisateur accorde à lederniermessage.com une licence perpétuelle et irrévocable de diffusion.</p>
+
+      <h2>Responsabilité</h2>
+      <p>L'éditeur ne peut être tenu responsable des messages publiés par les utilisateurs. Tout message contraire aux lois françaises pourra être supprimé sans préavis ni remboursement.</p>
+    </div>
+
+    <!-- CGV -->
+    <div class="section" id="cgv">
+      <h1>Conditions Générales de Vente</h1>
+      <p class="date">Dernière mise à jour : octobre 2024</p>
+
+      <div class="highlight">
+        <p>En effectuant un paiement sur lederniermessage.com, vous acceptez sans réserve les présentes CGV.</p>
+      </div>
+
+      <h2>1. Objet</h2>
+      <p>lederniermessage.com propose un service de publication permanente et irrévocable de messages texte sur un site web. Le nombre total de messages est limité à 1 000 000. Passé ce seuil, aucune nouvelle publication ne sera acceptée.</p>
+
+      <h2>2. Prix</h2>
+      <p>Le prix de publication d'un message est de <strong>1 € TTC</strong> par message. Ce prix inclut toutes taxes applicables.</p>
+
+      <h2>3. Paiement</h2>
+      <p>Le paiement est effectué en ligne et sécurisé par Stripe. Les moyens de paiement acceptés sont : carte bancaire (Visa, Mastercard, American Express), Apple Pay, Google Pay.</p>
+      <p>La transaction est débitée immédiatement au moment de la validation.</p>
+
+      <h2>4. Publication du message</h2>
+      <p>Le message est publié sur le site dans un délai maximum de 24h suivant la confirmation du paiement, après modération. La publication est définitive et irrévocable.</p>
+
+      <h2>5. Droit de rétractation</h2>
+      <p>Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne s'applique pas aux contenus numériques dont l'exécution a commencé avec l'accord du consommateur. <strong>Aucun remboursement ne sera effectué</strong> une fois le message publié.</p>
+      <p>Toutefois, si votre message n'a pas encore été publié (en attente de modération), vous pouvez demander l'annulation par email à <a href="mailto:contact@lederniermessage.com">contact@lederniermessage.com</a> dans les 14 jours suivant l'achat.</p>
+
+      <h2>6. Modération</h2>
+      <p>Sont strictement interdits et entraîneront la suppression du message sans remboursement :</p>
+      <ul>
+        <li>Les contenus haineux, discriminatoires ou incitant à la violence</li>
+        <li>Les contenus à caractère sexuel ou pornographique</li>
+        <li>Les contenus illégaux au regard du droit français</li>
+        <li>Les messages à caractère publicitaire ou spam</li>
+        <li>Les données personnelles d'un tiers sans son consentement</li>
+      </ul>
+
+      <h2>7. Pérennité du service</h2>
+      <p>L'éditeur s'engage à maintenir le site en ligne aussi longtemps que techniquement et financièrement possible. En cas de fermeture définitive du service, les utilisateurs seront informés par email dans un délai de 30 jours.</p>
+
+      <h2>8. Droit applicable</h2>
+      <p>Les présentes CGV sont soumises au droit français. En cas de litige, les tribunaux français sont seuls compétents.</p>
+
+      <h2>9. Contact</h2>
+      <p>Pour toute question : <a href="mailto:contact@lederniermessage.com">contact@lederniermessage.com</a></p>
+    </div>
+
+    <!-- POLITIQUE DE CONFIDENTIALITÉ -->
+    <div class="section" id="confidentialite">
+      <h1>Politique de confidentialité</h1>
+      <p class="date">Dernière mise à jour : octobre 2024</p>
+
+      <div class="highlight">
+        <p>Conformément au Règlement Général sur la Protection des Données (RGPD), nous vous informons de la manière dont vos données personnelles sont collectées et utilisées.</p>
+      </div>
+
+      <h2>1. Responsable du traitement</h2>
+      <p><strong>Audrey Mullier</strong> — contact@lederniermessage.com — Thézан-lès-Béziers, France</p>
+
+      <h2>2. Données collectées</h2>
+      <p>Lors de la publication d'un message, nous collectons :</p>
+      <ul>
+        <li><strong>Le texte du message</strong> (obligatoire) — publié sur le site</li>
+        <li><strong>Un prénom ou pseudo</strong> (facultatif) — publié sur le site</li>
+        <li><strong>Votre adresse email</strong> (facultatif) — utilisée uniquement pour envoyer la confirmation</li>
+        <li><strong>Données de paiement</strong> — traitées directement par Stripe, nous n'avons pas accès à vos coordonnées bancaires</li>
+        <li><strong>Adresse IP et données de navigation</strong> — collectées automatiquement par notre hébergeur Vercel</li>
+      </ul>
+
+      <h2>3. Finalités du traitement</h2>
+      <ul>
+        <li>Publication du message sur le site</li>
+        <li>Envoi de l'email de confirmation</li>
+        <li>Prévention de la fraude et modération</li>
+        <li>Obligations légales et comptables</li>
+      </ul>
+
+      <h2>4. Base légale</h2>
+      <p>Le traitement est fondé sur l'exécution du contrat (publication du message) et le consentement de l'utilisateur.</p>
+
+      <h2>5. Durée de conservation</h2>
+      <ul>
+        <li><strong>Messages publiés</strong> : conservés de façon permanente (c'est la nature du service)</li>
+        <li><strong>Adresse email</strong> : conservée 3 ans après la publication</li>
+        <li><strong>Données de paiement</strong> : conservées par Stripe conformément à leurs obligations légales (10 ans)</li>
+      </ul>
+
+      <h2>6. Partage des données</h2>
+      <p>Vos données ne sont jamais vendues. Elles sont partagées uniquement avec :</p>
+      <ul>
+        <li><strong>Stripe</strong> — pour le traitement du paiement</li>
+        <li><strong>Supabase</strong> — pour le stockage des données</li>
+        <li><strong>Vercel</strong> — pour l'hébergement</li>
+        <li><strong>Resend</strong> — pour l'envoi des emails de confirmation</li>
+      </ul>
+
+      <h2>7. Vos droits</h2>
+      <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+      <ul>
+        <li><strong>Droit d'accès</strong> — obtenir une copie de vos données</li>
+        <li><strong>Droit de rectification</strong> — corriger des données inexactes</li>
+        <li><strong>Droit à l'effacement</strong> — noter que le texte du message publié ne peut pas être supprimé (engagement contractuel), mais votre email peut l'être</li>
+        <li><strong>Droit d'opposition</strong> — vous opposer à certains traitements</li>
+      </ul>
+      <p>Pour exercer ces droits : <a href="mailto:contact@lederniermessage.com">contact@lederniermessage.com</a></p>
+      <p>Vous pouvez également adresser une réclamation à la <strong>CNIL</strong> : <a href="https://www.cnil.fr" target="_blank">cnil.fr</a></p>
+
+      <h2>8. Cookies</h2>
+      <p>Ce site utilise uniquement des cookies techniques strictement nécessaires au fonctionnement du service (session de paiement Stripe). Aucun cookie publicitaire ou de tracking n'est utilisé.</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="footer-copy">© 2024 Le Dernier Message</p>
+    <p class="footer-copy"><a href="/" style="color:inherit">Retour au site</a></p>
+  </div>
+</footer>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Lire l'ancre dans l'URL
+  const hash = window.location.hash.replace('#', '');
+  if (['mentions', 'cgv', 'confidentialite'].includes(hash)) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(hash).classList.add('active');
+    document.querySelectorAll('.tab')[['mentions','cgv','confidentialite'].indexOf(hash)].classList.add('active');
+  }
+</script>
+</body>
+</html>
